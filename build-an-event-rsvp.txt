@@ -1,0 +1,225 @@
+** start of index.html **
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Event RSVP</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.5/babel.min.js"></script>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      src="index.jsx"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      data-presets="react"
+      data-type="module"
+    >
+      import { EventRSVPForm } from './index.jsx';
+      ReactDOM.createRoot(document.getElementById('root')).render(
+        <EventRSVPForm />
+      );
+    </script>
+  </body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+* {
+  box-sizing: border-box;
+  font-family: "Times New Roman";
+}
+
+
+body {
+  /*margin-top: 0.2em;*/
+  text-align: center;
+  font-size: 1.1em;
+}
+
+
+h1 {
+  font-size: 2.6rem
+}
+
+
+.container, label, input, button {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /*height: 1.1em;*/
+  font-size: 1.1em;
+}
+
+input {
+  padding-top: 0.2em;
+}
+
+label {
+  margin-bottom: 0.2em;
+}
+
+input:focus {
+  background-color: lightYellow;
+  outline: lime solid 3px;
+  border: lightYellow solid 2px;
+  border-radius: 4px;
+}
+
+
+input[type="checkbox"] {
+
+  height: 1.3em;
+  accent-color: lightPink;
+  border: none;
+  outline: none;
+}
+
+
+button {
+  margin-top: 1.22em;
+  padding: 0.24em;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 2px;
+  background-color: aquamarine
+}
+
+button:focus {
+
+  background-color: black;
+  color: white;
+  font-size: 0.9em;
+  font-weight: 300;
+}
+
+
+** end of styles.css **
+
+** start of index.jsx **
+
+const { useState } = React;
+
+export function EventRSVPForm() {
+
+  const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [numberOfAttendees, setNumberOfAttendees] = useState("");
+
+  const [diet, setDiet] = useState("");
+
+  const [haveGuests, setHaveGuests] = useState(false);
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [dataSubmitted, setDataSubmitted] = useState("");
+
+  /*if(isSubmitted) {
+
+    setDataSubmitted({ name, email, num, diet, guests });
+  }*/
+
+
+  const handleSubmit = e => {
+
+    e.preventDefault();
+    setIsSubmitted(true);
+
+    //if(isSubmitted) {
+
+      setDataSubmitted({ name, email, numberOfAttendees, diet, haveGuests });
+
+      //clean form after submit
+      setName("");
+      setEmail("");
+      setNumberOfAttendees("");
+      setDiet("");
+      setHaveGuests(false);
+    //}
+
+  }
+
+  /*if(dataSubmitted.haveGuests) {
+    setHaveGuests("Yes");
+  }
+  else {
+    setHaveGuests("No");
+  }*/
+  
+
+  return (
+    <div className="container">
+      <h1 id="title">
+        {"Event RSVP Form"}
+      </h1>
+      <form id="rsvp" onSubmit={handleSubmit}>
+        <label htmlFor="name">
+          {"Your name:"}
+        </label>
+        <input type="text" id="name" value={name} onChange={e => setName(e.target.value)} required/><br/>
+        <label htmlFor="email">
+          {"Your email:"}
+        </label>
+        <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} required/><br/>
+        <label htmlFor="number">
+          {"Number of Attendees:"}
+        </label>
+        <input type="number" id="number" pattern="[1-9]+" value={numberOfAttendees} onChange={e => setNumberOfAttendees(e.target.value)} required/><br/>
+        <label htmlFor="diet">
+          {"Dietary preferences:"}
+        </label>
+        <input type="text" id="diet" value={diet} onChange={e => setDiet(e.target.value)} /><br/>
+        <label htmlFor="guests">
+          {"Will you bring additional guests?"}
+        </label>
+        <input type="checkbox" id="guests" checked={haveGuests} onChange={e => setHaveGuests(e.target.checked)} />
+        <button form="rsvp" type="submit">
+          {"Submit"}
+        </button>
+      </form>
+      {isSubmitted && (
+        <div className="container-submit">
+          <p>
+            {"RSVP Submitted!"}
+          </p>
+          <p>
+            {"Name: "}{dataSubmitted.name}
+          </p>
+          <p>
+            {"Email: "}{dataSubmitted.email}
+          </p>
+          <p>
+            {"Number of attendees: "}{dataSubmitted.numberOfAttendees}
+          </p>
+          <p>
+            {"Dietary preferences: "}{dataSubmitted.diet}
+          </p>
+          <p>
+            {"Bringing additional guests: "}{/*dataSubmitted.haveGuests*/ haveGuests ? "Yes" : "No"}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+** end of index.jsx **
+
