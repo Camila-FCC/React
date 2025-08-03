@@ -1,0 +1,174 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Currency Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.5/babel.min.js"></script>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      src="index.jsx"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div id="root"></div>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      data-presets="react"
+      data-type="module"
+    >
+      import { CurrencyConverter } from './index.jsx';
+      ReactDOM.createRoot(document.getElementById('root')).render(<CurrencyConverter />);
+    </script>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+* {
+  box-sizing: border-box;
+  margin-top: 0.2em;
+  font-family: "Monospace";
+}
+
+
+.container {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+h1 {
+  font-size: 2.265rem;
+  font-weight: bold;
+  /*font-family: "Arial"*/
+}
+
+label, h3 {
+  font-size: 1.52rem;
+}
+
+h3 {
+  background-color: lightBlue;
+  /*color: white;*/
+  border-radius: 6px;
+  padding: 0.5em;
+  /*width: 50%;*/
+  text-align: center;
+  font-size: 1.8rem;
+  border: 3.6px solid darkBlue;
+}
+/*
+h3:before, h3:after {
+  content: "💰";
+}
+*/
+input, select {
+  padding: 0.4em;
+}
+
+input {
+  width: 10%;
+  font-size: 1.4rem;
+  font-weight: bold;
+  transition: width 0.7s ease-in-out;
+}
+
+input:focus, select:focus {
+  background-color: lightYellow;
+  border-radius: 3px;
+  border: none;
+  outline: 3px solid darkBlue;
+}
+
+select {
+  font-size: 1.45rem;
+  border: none;
+  font-weight: bold;
+  background-color: lightYellow;
+}
+
+** end of styles.css **
+
+** start of index.jsx **
+
+const { useState, useMemo } = React;
+
+export function CurrencyConverter() {
+
+  const [quantity, setQuantity] = useState(1);
+
+  const [currencyFrom, setCurrencyFrom] = useState("USD");
+
+  const [currencyTo, setCurrencyTo] = useState("EUR");
+
+  const [exchange, setExchange] = useState(null);
+
+
+  const handleExchange = useMemo(() => {
+
+    const goodMapping = {
+      USD: 1,
+      EUR: 0.92,
+      GBP: 0.78,
+      JPY: 156.7
+    };
+
+
+    const calculation = ((goodMapping[currencyTo] / goodMapping[currencyFrom]) * quantity).toFixed(2);
+
+    return setExchange(calculation);
+
+
+  }, [quantity, currencyFrom]);
+
+
+
+  return (
+    <div className="container">
+      <h1>{"Currency Converter"}</h1>
+      <br/><br/>
+      <label htmlFor="search">
+        <strong>{currencyFrom}</strong>{" ➡️ "}<strong>{currencyTo}</strong>
+      </label>
+      <input style={{
+        width: `${quantity.length > 20 ? 100 : quantity.length > 8 ? 70 : quantity.length > 2 ? 35 : 12}%`
+        }} id="search" type="number" value={quantity} onChange={e => setQuantity(e.target.value)} /><br/>
+      <label htmlFor="from">
+        {"From:"}
+      </label>
+      <select id="from" value={currencyFrom} onChange={e => setCurrencyFrom(e.target.value)}>
+        {
+          ["USD", "EUR", "GBP", "JPY"].map((item, index) => <option key={`${index}-${item}`} value={item}>{item}</option>)
+        }
+      </select><br/>
+      <label htmlFor="to">
+        {"To:"}
+      </label>
+      <select id="to" value={currencyTo} onChange={e => setCurrencyTo(e.target.value)}>
+        {
+          ["USD", "EUR", "GBP", "JPY"].map((item, index) => <option key={`${index}-${item}`} value={item}>{item}</option>)
+        }
+      </select><br/>
+      <h3>{` ${exchange} ${currencyTo} `}</h3>
+    </div>
+  );
+
+}
+
+** end of index.jsx **
+
