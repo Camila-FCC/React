@@ -134,7 +134,7 @@ export function CurrencyConverter() {
     return setExchange(calculation);
 
 
-  }, [quantity, currencyFrom]);
+  }, [quantity, currencyFrom, currencyTo]);
 
 
 
