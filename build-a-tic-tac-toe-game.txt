@@ -1,0 +1,241 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Tic-Tac-Toe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.development.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.5/babel.min.js"></script>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      src="index.jsx"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div id="root"></div>
+    <script
+      data-plugins="transform-modules-umd"
+      type="text/babel"
+      data-presets="react"
+      data-type="module"
+    >
+      import { Board } from './index.jsx';
+      ReactDOM.createRoot(document.getElementById('root')).render(<Board />);
+    </script>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+* {
+  box-sizing: border-box;
+  font-family: "Monospace";
+}
+
+h1 {
+  font-weight: bold;
+  text-align: center;
+  font-size: 3rem;
+  color: aquamarine;
+  background-color: #000221;
+  border-radius: 6px;
+  border: 2px dashed pink;
+  outline: none;
+  padding: 0.1em;
+}
+
+body {
+  background-color: pink;
+  margin-top: 3vh;
+}
+
+.board {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr); 
+
+  grid-template-rows: repeat(3, 100px); 
+
+  gap: 5px;
+
+  border: none;/*3px solid deepPink;*/
+  
+  border-radius: 6px;
+
+}
+
+
+.board-square, .square {
+
+  background-color: #000221;
+
+  border: 5px solid deepPink;
+
+  padding: 10px;
+
+  text-align: center;
+
+  border-radius: 6px;
+
+}
+
+.square {
+  
+  width: 100%;
+  height: 100%;
+  border: none;
+  color: aquamarine;
+  font-size: 4rem;
+  font-weight: 800;
+  padding: 0
+
+}
+
+
+#reset {
+  
+  display: inline;
+  border: none;
+  width: 100%;
+  font-size: 1.2em;
+  padding: 0.3em;
+  border-radius: 3px;
+  margin-top: 1vh;
+  color: black;
+  background-color: lightGreen;
+  /*font-family: "Monospace";*/
+}
+
+
+/*#reset:focus, */#reset:active {
+
+  font-size: 1em;
+  background-color: #000221;
+  color: white;
+}
+
+#reset:focus {
+
+  outline: none;
+  border: 3px solid black;
+}
+
+
+#win, #draw {
+
+  text-align: center;
+  padding: 0.3em;
+  margin-top: 5vh;
+  font-size: 2em;
+  border-radius: 6px;
+  border: none;
+  background-color: midnightBlue;
+  color: white;
+  font-weight: bold;
+}
+
+#draw {
+
+  background-color: lightYellow;
+
+  color: midnightBlue;
+}
+
+
+** end of styles.css **
+
+** start of index.jsx **
+
+const { useState } = React;
+
+export function Board() {
+
+  const [board, setBoard] = useState(Array(9).fill(null));
+
+  const [isX, setIsX] = useState(true);
+
+  
+  const winners = board => {
+  
+    const winLines = [
+      [0, 1, 2], 
+      [3, 4, 5], 
+      [6, 7, 8], 
+      [0, 3, 6], 
+      [1, 4, 7], 
+      [2, 5, 8], 
+      [0, 4, 8], 
+      [2, 4, 6]
+    ];
+
+    for(let i = 0; i < winLines.length; i++) {
+
+      const [a, b, c] = winLines[i];
+
+      if(board[a] && board[a] === board[b] && board[a] === board[c]) {
+
+        return board[a];
+      }
+    }
+    
+    return null;
+  }
+
+
+  const handleClick = i => {
+
+    //to disable btn once it was clicked or when we have a winner:
+    if(board[i] || winners(board)) {
+      return;
+    }
+
+    const copy = [...board];
+
+    if(isX) {
+      copy[i] = "X";
+    }
+    else {
+      copy[i] = "O";
+    }
+    
+    setBoard(copy);
+    setIsX(!isX);
+  }
+
+  return (
+  <>
+    <h1>{"Tic Tac Toe"}</h1>
+    <div className="board">
+      {board.map((_, i) => <div className="board-square" key={i}><button key={i} className="square" onClick={() => handleClick(i)} style={{
+        
+        backgroundColor: winners(board) ? "yellow" : "#000221",
+
+        color: winners(board) ? "darkBlue" : "aquamarine"
+
+      }}>{board[i]}</button></div>)}
+    </div>
+    <button id="reset" onClick={() => {
+      setBoard(Array(9).fill(null));
+      setIsX(true);
+      }}>
+      {"Reset the Game"}
+    </button>
+    {winners(board) !== null && <div id="win">{`Winner: Player ${winners(board)}!`}</div>}
+    {board.every(square => square !== null) && <div id="draw">{`It's a draw!`}</div>}
+  </>
+  );
+
+}
+
+** end of index.jsx **
+
